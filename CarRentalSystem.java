@@ -3,32 +3,12 @@ import java.util.*;
 class CarRentalSystem {
     private Map<String, User> users;
     private List<Vehicle> vehicles;
-    private Boolean isadmin;
+    private Boolean isadmin = false;
 
     public CarRentalSystem() {
         users = new HashMap<>();
         vehicles = new ArrayList<>();
-
-        vehicles.add(new Vehicle("ABC123", "Toyota", "Camry", VehicleType.SEDAN, 50.0));
-        vehicles.add(new Vehicle("XYZ456", "Honda", "Accord", VehicleType.SEDAN, 60.0));
-        vehicles.add(new Vehicle("DEF789", "Ford", "Explorer", VehicleType.SUV, 80.0));
-        vehicles.add(new Vehicle("GHI101", "Chevrolet", "Cruze", VehicleType.SEDAN, 55.0));
-        vehicles.add(new Vehicle("JKL202", "Nissan", "Altima", VehicleType.SEDAN, 52.0));
-        vehicles.add(new Vehicle("MNO303", "Toyota", "RAV4", VehicleType.SUV, 75.0));
-        vehicles.add(new Vehicle("PQR404", "Hyundai", "Sonata", VehicleType.SEDAN, 58.0));
-        vehicles.add(new Vehicle("STU505", "Jeep", "Wrangler", VehicleType.SUV, 90.0));
-        vehicles.add(new Vehicle("VWX606", "Kia", "Sportage", VehicleType.SUV, 70.0));
-        vehicles.add(new Vehicle("YZA707", "Subaru", "Outback", VehicleType.SUV, 85.0));
-        vehicles.add(new Vehicle("BCB808", "Mazda", "CX-5", VehicleType.SUV, 78.0));
-        vehicles.add(new Vehicle("CDE909", "Volkswagen", "Jetta", VehicleType.SEDAN, 57.0));
-        vehicles.add(new Vehicle("FGF010", "Ford", "F-150", VehicleType.TRUCK, 100.0));
-        vehicles.add(new Vehicle("HIH111", "Toyota", "Tacoma", VehicleType.TRUCK, 95.0));
-        vehicles.add(new Vehicle("IJI212", "Chevrolet", "Silverado", VehicleType.TRUCK, 105.0));
-        vehicles.add(new Vehicle("JKJ313", "Ram", "1500", VehicleType.TRUCK, 98.0));
-        vehicles.add(new Vehicle("KAK414", "GMC", "Sierra", VehicleType.TRUCK, 102.0));
-        vehicles.add(new Vehicle("LML515", "Ford", "Escape", VehicleType.SUV, 73.0));
-        vehicles.add(new Vehicle("MNM616", "Honda", "Pilot", VehicleType.SUV, 82.0));
-        vehicles.add(new Vehicle("NON717", "Nissan", "Rogue", VehicleType.SUV, 68.0));
+        this.CreateMonkVehicles();
 
     }
 
@@ -57,21 +37,20 @@ class CarRentalSystem {
         }
     }
 
-    public void editProfile(String username, String newPassword, String name, String surname, String gender, int age, String address) {
+    public void editProfile(User user) {
         Scanner scanner = new Scanner(System.in);
-        User user = users.get(username);
         
         if (user != null) {
             System.out.print("Enter your current password: ");
             String currentPassword = scanner.nextLine();
             
             if (user.getPassword().equals(currentPassword)) {
-                user.setPassword(newPassword);
-                user.setName(name);
-                user.setSurname(surname);
-                user.setGender(gender);
-                user.setAge(age);
-                user.setAddress(address);
+                user.setPassword(user.getPassword());
+                user.setName(user.getName());
+                user.setSurname(user.getSurname());
+                user.setGender(user.getGender());
+                user.setAge(user.getAge());
+                user.setAddress(user.getAddress());
                 System.out.println("Profile updated successfully.");
             } else {
                 System.out.println("Invalid password. Profile update failed.");
@@ -82,16 +61,30 @@ class CarRentalSystem {
     }
     
 
-    public void signUp(String username, String password, String name, String surname, String gender, int age, String address, int adminpassword) {
+    public boolean signUp(String username, String password, String name, String surname, String gender, int age, String address, int adminpassword, int type) {
         if (age < 18) {
             throw new IllegalArgumentException("User must be at least 18 years old.");
         }
         User newuser = new User(username, password, name, surname, gender, age, address, adminpassword);
-        if (newuser.isAdmin()) {
-            this.isadmin = true;
-            System.out.println(this.isAdmin());
+        this.isadmin = newuser.isAdmin();
+        if (type == 1 && !this.isAdmin()) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Admin password incorrect");
+            System.out.print("Do you want to continue as customer (yes/no) : ");
+            String answer = scanner.nextLine();
+            if (answer == "yes") {
+                users.put(username, newuser);
+                scanner.close();
+                return true;
+            }else {
+                scanner.close();
+                return false;
+            }
+        }else {
+            users.put(username, newuser);
+            System.out.println("User successfully entered");
         }
-        users.put(username, newuser);
+        return true;
     }
 
     public void listSedans() {
@@ -161,8 +154,8 @@ class CarRentalSystem {
         while (iterator.hasNext()) {
             Vehicle vehicle = iterator.next();
             if (vehicle.getRegistrationNumber().equals(registrationNumber)) {
+                System.out.println(vehicle.toString() + "removed successfully.");
                 iterator.remove();
-                System.out.println("Vehicle removed successfully.");
                 return;
             }
         }
@@ -207,6 +200,63 @@ class CarRentalSystem {
             return;
         }
         vehicles.add(vehicle);
-        System.out.println("Vehicle added successfully.");
+    }
+
+    public void addUser(User user) {
+        if (!this.isAdmin()) {
+            System.out.println("Access denied. Admin privileges required.");
+            return;
+        }else {
+            this.signUp(user.getUsername(), user.getPassword(), user.getName(), user.getSurname(), user.getGender(), user.getAge(), user.getAddress(), 0000, 2);
+            System.out.println("User Successfully Added");
+        }
+    }
+
+    public User TakeUserInfo() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Name: ");
+        String name = scanner.nextLine();
+        System.out.print("Surname: ");
+        String username = scanner.nextLine();
+        System.out.print("Username: ");
+        String surname = scanner.nextLine();
+        System.out.print("Gender: ");
+        String gender = scanner.nextLine();
+        System.out.print("Age: ");
+        int age = scanner.nextInt();
+
+        System.out.print("Address: ");
+        String address = scanner.nextLine();
+        System.out.print("Password: ");
+        String password = scanner.nextLine();
+        return  new User(username, password, name, surname, gender, age, address, age);
+    } 
+    
+
+    public void CreateMonkVehicles() {
+        vehicles.add(new Vehicle("ABC123", "Toyota", "Camry", VehicleType.SEDAN, 50.0));
+        vehicles.add(new Vehicle("XYZ456", "Honda", "Accord", VehicleType.SEDAN, 60.0));
+        vehicles.add(new Vehicle("DEF789", "Ford", "Explorer", VehicleType.SUV, 80.0));
+        vehicles.add(new Vehicle("GHI101", "Chevrolet", "Cruze", VehicleType.SEDAN, 55.0));
+        vehicles.add(new Vehicle("JKL202", "Nissan", "Altima", VehicleType.SEDAN, 52.0));
+        vehicles.add(new Vehicle("MNO303", "Toyota", "RAV4", VehicleType.SUV, 75.0));
+        vehicles.add(new Vehicle("PQR404", "Hyundai", "Sonata", VehicleType.SEDAN, 58.0));
+        vehicles.add(new Vehicle("STU505", "Jeep", "Wrangler", VehicleType.SUV, 90.0));
+        vehicles.add(new Vehicle("VWX606", "Kia", "Sportage", VehicleType.SUV, 70.0));
+        vehicles.add(new Vehicle("YZA707", "Subaru", "Outback", VehicleType.SUV, 85.0));
+        vehicles.add(new Vehicle("BCB808", "Mazda", "CX-5", VehicleType.SUV, 78.0));
+        vehicles.add(new Vehicle("CDE909", "Volkswagen", "Jetta", VehicleType.SEDAN, 57.0));
+        vehicles.add(new Vehicle("FGF010", "Ford", "F-150", VehicleType.TRUCK, 100.0));
+        vehicles.add(new Vehicle("HIH111", "Toyota", "Tacoma", VehicleType.TRUCK, 95.0));
+        vehicles.add(new Vehicle("IJI212", "Chevrolet", "Silverado", VehicleType.TRUCK, 105.0));
+        vehicles.add(new Vehicle("JKJ313", "Ram", "1500", VehicleType.TRUCK, 98.0));
+        vehicles.add(new Vehicle("KAK414", "GMC", "Sierra", VehicleType.TRUCK, 102.0));
+        vehicles.add(new Vehicle("LML515", "Ford", "Escape", VehicleType.SUV, 73.0));
+        vehicles.add(new Vehicle("MNM616", "Honda", "Pilot", VehicleType.SUV, 82.0));
+        vehicles.add(new Vehicle("NON717", "Nissan", "Rogue", VehicleType.SUV, 68.0));
+    }   
+
+    public void CreateMonkUsers() {
+        
     }
 }

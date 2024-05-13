@@ -1,7 +1,6 @@
 enum VehicleType {
     SEDAN,
     SUV,
-    CONVERTIBLE,
     TRUCK
 }
 
