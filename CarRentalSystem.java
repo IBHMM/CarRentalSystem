@@ -9,7 +9,7 @@ class CarRentalSystem {
         users = new HashMap<>();
         vehicles = new ArrayList<>();
         this.CreateMonkVehicles();
-
+        this.CreateMonkUsers();
     }
 
     public boolean isAdmin() {
@@ -19,7 +19,7 @@ class CarRentalSystem {
     public void showProfileInfo(String username) {
         Scanner scanner = new Scanner(System.in);
         User user = users.get(username);
-        
+        System.out.println(user);
         if (user != null) {
             System.out.print("Enter your current password: ");
             String currentPassword = scanner.nextLine();
@@ -37,20 +37,24 @@ class CarRentalSystem {
         }
     }
 
-    public void editProfile(User user) {
+    public void editProfile() {
         Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter your current username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter your current password: ");
+        String currentPassword = scanner.nextLine();
         
+        User user = users.get(username);
+
         if (user != null) {
-            System.out.print("Enter your current password: ");
-            String currentPassword = scanner.nextLine();
-            
             if (user.getPassword().equals(currentPassword)) {
-                user.setPassword(user.getPassword());
-                user.setName(user.getName());
-                user.setSurname(user.getSurname());
-                user.setGender(user.getGender());
-                user.setAge(user.getAge());
-                user.setAddress(user.getAddress());
+                User newUserInfo = this.TakeUserInfo();
+                user.setPassword(newUserInfo.getPassword());
+                user.setName(newUserInfo.getName());
+                user.setSurname(newUserInfo.getSurname());
+                user.setGender(newUserInfo.getGender());
+                user.setAge(newUserInfo.getAge());
+                user.setAddress(newUserInfo.getAddress());
                 System.out.println("Profile updated successfully.");
             } else {
                 System.out.println("Invalid password. Profile update failed.");
@@ -59,6 +63,7 @@ class CarRentalSystem {
             System.out.println("User not found.");
         }
     }
+
     
 
     public boolean signUp(String username, String password, String name, String surname, String gender, int age, String address, int adminpassword, int type) {
@@ -82,7 +87,7 @@ class CarRentalSystem {
             }
         }else {
             users.put(username, newuser);
-            System.out.println("User successfully entered");
+            // System.out.println("User successfully entered");
         }
         return true;
     }
@@ -142,6 +147,8 @@ class CarRentalSystem {
         }
 
         double bill = vehicleToRent.getRentPrice() * numberOfDays;
+        this.vehicles.add(vehicleToRent);
+        user.addRentedVehicle(vehicleToRent);
         return bill;
     }
 
@@ -190,7 +197,7 @@ class CarRentalSystem {
         }
         System.out.println("List of all users:");
         for (User user : users.values()) {
-            System.out.println(user);
+            System.out.println(user.Printuser() + "\n");
         }
     }
 
@@ -217,20 +224,22 @@ class CarRentalSystem {
         System.out.print("Name: ");
         String name = scanner.nextLine();
         System.out.print("Surname: ");
-        String username = scanner.nextLine();
-        System.out.print("Username: ");
         String surname = scanner.nextLine();
+        System.out.print("Username: ");
+        String username = scanner.nextLine();
         System.out.print("Gender: ");
         String gender = scanner.nextLine();
         System.out.print("Age: ");
         int age = scanner.nextInt();
-
+        scanner.nextLine(); // Consume newline
+    
         System.out.print("Address: ");
         String address = scanner.nextLine();
         System.out.print("Password: ");
         String password = scanner.nextLine();
-        return  new User(username, password, name, surname, gender, age, address, age);
-    } 
+        return new User(username, password, name, surname, gender, age, address, age);
+    }
+    
     
 
     public void CreateMonkVehicles() {
@@ -257,6 +266,15 @@ class CarRentalSystem {
     }   
 
     public void CreateMonkUsers() {
-        
+        signUp("user1", "password1", "John", "Doe", "Male", 25, "Address 1", 0000, 2);
+        signUp("user2", "password2", "Alice", "Smith", "Female", 30, "Address 2", 0000, 2);
+        signUp("user3", "password3", "Bob", "Johnson", "Male", 35, "Address 3", 0000, 2);
+        signUp("user4", "password4", "Emily", "Brown", "Female", 40, "Address 4", 0000, 2);
+        signUp("user5", "password5", "Michael", "Davis", "Male", 45, "Address 5", 0000, 2);
+        signUp("user6", "password6", "Jessica", "Wilson", "Female", 50, "Address 6", 0000, 2);
+        signUp("user7", "password7", "David", "Martinez", "Male", 55, "Address 7", 0000, 2);
+        signUp("user8", "password8", "Sarah", "Lopez", "Female", 60, "Address 8", 0000, 2);
+        signUp("user9", "password9", "James", "Gonzalez", "Male", 65, "Address 9", 0000, 2);
+        signUp("user10", "password10", "Emma", "Rodriguez", "Female", 70, "Address 10", 0000, 2);
     }
 }

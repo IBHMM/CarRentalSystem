@@ -119,4 +119,26 @@ public class User {
     public boolean isAdmin() {
         return this.isAdmin;
     }
+
+    public String Printuser() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Username: ").append(username).append("\n");
+        sb.append("Password: ").append(password).append("\n");
+        sb.append("Name: ").append(name).append("\n");
+        sb.append("Surname: ").append(surname).append("\n");
+        sb.append("Gender: ").append(gender).append("\n");
+        sb.append("Age: ").append(age).append("\n");
+        sb.append("Address: ").append(address).append("\n");
+        sb.append("Admin: ").append(isAdmin ? "Yes" : "No").append("\n");
+        sb.append("Rented Vehicles: ");
+        if (rentedVehicles.isEmpty()) {
+            sb.append("None");
+        } else {
+            for (Vehicle vehicle : rentedVehicles) {
+                sb.append(vehicle.getRegistrationNumber()).append(", ");
+            }
+            sb.delete(sb.length() - 2, sb.length()); // Remove trailing comma and space
+        }
+        return sb.toString();
+    }
 }

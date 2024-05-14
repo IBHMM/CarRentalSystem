@@ -62,13 +62,15 @@ public class Main {
             System.out.println("Admin Methods : ");
             System.out.println("8.  Add a Vehicle");
             System.out.println("9.  Remove a Vehicle");
-            System.out.println("10. Add a User");
-            System.out.println("11. Remove a User");
-            System.out.println("12. List all rented Vehicles");
-            System.out.println("13. List info of specific user \n");
+            System.out.println("10. List all users");
+            System.out.println("11. Add a User");
+            System.out.println("12. Remove a User");
+            System.out.println("13. List all rented Vehicles");
+            System.out.println("14. List info of specific User");
+            System.out.println("15. List info of specific Vehicle \n");
         }
 
-        System.out.println("14. Exit");
+        System.out.println("16. Exit");
 
         // Handle user actions
         while (true) {
@@ -110,8 +112,8 @@ public class Main {
                     carRentalSystem.showProfileInfo(username);
                     break;
                 case 7:
-                    System.out.println("Enter new profile information:");
-                    carRentalSystem.editProfile(carRentalSystem.TakeUserInfo());
+                    System.out.println("Edit Profile : ");
+                    carRentalSystem.editProfile();
                     break;
                 case 8:
                     System.out.println("Enter new vehicle information:");
@@ -159,11 +161,15 @@ public class Main {
                     String registrationnumber = scanner.nextLine();
                     carRentalSystem.removeVehicle(registrationnumber);
                     break;
-                case 10:
+                case 10: 
+                    System.out.println("All Users ...");
+                    carRentalSystem.listAllUsers();
+                    break;
+                case 11:
                     System.out.println("Enter new user information:");
                     carRentalSystem.addUser(carRentalSystem.TakeUserInfo());
                     break;
-                case 14:
+                case 16:
                     System.out.println("Exiting...");
                     return;
                 default:
