@@ -6,75 +6,63 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         CarRentalSystem carRentalSystem = new CarRentalSystem();
         int adminpassword = 0;
+        final String uuid = UUID.randomUUID().toString();
 
-        System.out.println("Welcome to the Car Rental System!");
+        // ANSI escape codes
+        String ANSI_RESET = "\u001B[0m";
+        String ANSI_CYAN = "\u001B[36m";
+        String ANSI_YELLOW = "\u001B[33m";
+        String ANSI_GREEN = "\u001B[32m";
+        String ANSI_RED = "\u001B[31m";
+
+        System.out.println(ANSI_CYAN + "Welcome to the Car Rental System!");
         System.out.println("Please sign up to continue.");
         System.out.println("Who are you");
         System.out.println("1. Admin");
         System.out.println("2. Customer");
-        System.out.print("TYPE : ");
+        System.out.print("TYPE : " + ANSI_YELLOW);
         int type = scanner.nextInt();
+        scanner.nextLine();
+
         if (type == 1) {
-            System.out.print("Enter admin password : ");
+            System.out.print(ANSI_CYAN + "Enter admin password : " + ANSI_YELLOW);
             adminpassword = scanner.nextInt();
             scanner.nextLine();
         }
-        System.out.print("Enter your username: ");
+
+        System.out.print(ANSI_CYAN + "Enter your username: " + ANSI_YELLOW);
         String username = scanner.nextLine();
-        System.out.print("Enter your password: ");
+        System.out.print(ANSI_CYAN + "Enter your password: " + ANSI_YELLOW);
         String password = scanner.nextLine();
-        System.out.print("Enter your name: ");
+        System.out.print(ANSI_CYAN + "Enter your name: " + ANSI_YELLOW);
         String name = scanner.nextLine();
-        System.out.print("Enter your surname: ");
+        System.out.print(ANSI_CYAN + "Enter your surname: " + ANSI_YELLOW);
         String surname = scanner.nextLine();
-        System.out.print("Enter your gender: ");
+        System.out.print(ANSI_CYAN + "Enter your gender: " + ANSI_YELLOW);
         String gender = scanner.nextLine();
-        System.out.print("Enter your age: ");
+        System.out.print(ANSI_CYAN + "Enter your age: " + ANSI_YELLOW);
         int age = scanner.nextInt();
         scanner.nextLine();
-        System.out.print("Enter your address: ");
+        System.out.print(ANSI_CYAN + "Enter your address: " + ANSI_YELLOW);
         String address = scanner.nextLine();
 
         try {
-            boolean result = carRentalSystem.signUp(username, password, name, surname, gender, age, address, adminpassword, type);
+            boolean result = carRentalSystem.signUp(username, password, name, surname, gender, age, address, adminpassword, type, uuid);
             if (result) {
-                System.out.println("Sign up successful!");
-            }else {
-                
+                System.out.println(ANSI_GREEN + "Sign up successful!" + ANSI_RESET);
+            } else {
                 return;
             }
         } catch (IllegalArgumentException e) {
-            System.out.println("Sign up failed: " + e.getMessage());
+            System.out.println(ANSI_RED + "Sign up failed: " + e.getMessage() + ANSI_RESET);
             return;
         }
 
-        System.out.println(carRentalSystem.isAdmin());
-        System.out.println("\nAvailable Actions:");
-        System.out.println("1. List all available sedans");
-        System.out.println("2. List all available SUVs");
-        System.out.println("3. List all available trucks");
-        System.out.println("4. List cars by price range");
-        System.out.println("5. Rent a car");
-        System.out.println("6. Show profile information");
-        System.out.println("7. Edit profile \n");
-
-        if (carRentalSystem.isAdmin()) {
-            System.out.println("Admin Methods : ");
-            System.out.println("8.  Add a Vehicle");
-            System.out.println("9.  Remove a Vehicle");
-            System.out.println("10. List all users");
-            System.out.println("11. Add a User");
-            System.out.println("12. Remove a User");
-            System.out.println("13. List all rented Vehicles");
-            System.out.println("14. List info of specific User");
-            System.out.println("15. List info of specific Vehicle \n");
-        }
-
-        System.out.println("16. Exit");
+        carRentalSystem.PrintAllMethods();
 
         // Handle user actions
         while (true) {
-            System.out.print("\nEnter your choice: ");
+            System.out.print("\u001B[35m" + "\nEnter your choice: " + ANSI_RESET);
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
 
@@ -89,43 +77,43 @@ public class Main {
                     carRentalSystem.listTrucks();
                     break;
                 case 4:
-                    System.out.print("Enter minimum price: ");
+                    System.out.print(ANSI_RED + "Enter minimum price: ");
                     double minPrice = scanner.nextDouble();
-                    System.out.print("Enter maximum price: ");
+                    System.out.print(ANSI_GREEN + "Enter maximum price: " + ANSI_RESET);
                     double maxPrice = scanner.nextDouble();
                     carRentalSystem.listCarsByPriceRange(minPrice, maxPrice);
                     break;
                 case 5:
-                    System.out.print("Enter the registration number of the vehicle you want to rent: ");
+                    System.out.print(ANSI_CYAN + "Enter the registration number of the vehicle you want to rent: " + ANSI_YELLOW);
                     String registrationNumber = scanner.nextLine();
-                    System.out.print("Enter the number of days you want to rent: ");
+                    System.out.print(ANSI_CYAN +"Enter the number of days you want to rent: "  + ANSI_YELLOW);
                     int numberOfDays = scanner.nextInt();
                     scanner.nextLine(); // Consume newline
                     try {
-                        double bill = carRentalSystem.rentCar(username, registrationNumber, numberOfDays);
-                        System.out.println("Total bill: $" + bill);
+                        double bill = carRentalSystem.rentCar(uuid, registrationNumber, numberOfDays);
+                        System.out.println(ANSI_CYAN + "Total bill: $" + ANSI_YELLOW + bill);
                     } catch (IllegalArgumentException e) {
-                        System.out.println("Renting failed: " + e.getMessage());
+                        System.out.println(ANSI_RED + "Renting failed: " + e.getMessage() + ANSI_RESET);
                     }
                     break;
                 case 6:
-                    carRentalSystem.showProfileInfo(username);
+                    carRentalSystem.showProfileInfo(uuid);
                     break;
                 case 7:
                     System.out.println("Edit Profile : ");
-                    carRentalSystem.editProfile();
+                    carRentalSystem.editProfile(uuid);
                     break;
                 case 8:
-                    System.out.println("Enter new vehicle information:");
-                    System.out.print("Make: ");
+                    System.out.println(ANSI_CYAN + "Enter new vehicle information:");
+                    System.out.print("Make: " + ANSI_YELLOW);
                     String make = scanner.nextLine();
-                    System.out.print("Model: ");
+                    System.out.print(ANSI_CYAN + "Model: " + ANSI_YELLOW);
                     String model = scanner.nextLine();
-                    System.out.println("Type: ");
+                    System.out.println(ANSI_CYAN + "Type: ");
                     System.out.println("1. SEDAN");
                     System.out.println("2. SUV");
                     System.out.println("3. TRUCK");
-                    System.out.print("Enter option: ");
+                    System.out.print("Enter option: " + ANSI_YELLOW);
                     int option = scanner.nextInt();
                     VehicleType typ = null;
                     switch (option) {
@@ -139,41 +127,63 @@ public class Main {
                             typ = VehicleType.TRUCK;
                             break;
                         default:
-                            System.out.println("Invalid option. Vehicle adding failed.");
+                            System.out.println(ANSI_RED + "Invalid option. Vehicle adding failed." + ANSI_RESET);
                             return;
                     }
-                    System.out.print("Price: ");
+                    System.out.print(ANSI_CYAN + "Price: " + ANSI_YELLOW);
                     double price = scanner.nextDouble();
                     scanner.nextLine();
-                    System.out.print("ID: ");
+                    System.out.print(ANSI_CYAN + "ID: " + ANSI_YELLOW);
                     String id = scanner.nextLine();
             
                     if (typ != null && !make.isEmpty() && !model.isEmpty() && price > 0 && !id.isEmpty()) {
                         carRentalSystem.addVehicle(new Vehicle(id, make, model, typ, price));
-                        System.out.println("Vehicle added successfully.");
+                        System.out.println(ANSI_GREEN + "Vehicle added successfully." + ANSI_RESET);
                     } else {
-                        System.out.println("Vehicle adding failed. Please provide valid information.");
+                        System.out.println(ANSI_RED + "Vehicle adding failed. Please provide valid information." + ANSI_RESET);
                     }
 
                     break;
                 case 9: 
-                    System.out.println("Enter Registration number : ");
+                    System.out.println(ANSI_CYAN + "Enter Registration number : " + ANSI_YELLOW);
                     String registrationnumber = scanner.nextLine();
                     carRentalSystem.removeVehicle(registrationnumber);
                     break;
                 case 10: 
-                    System.out.println("All Users ...");
+                    System.out.println(ANSI_GREEN + "All Users ...");
                     carRentalSystem.listAllUsers();
                     break;
                 case 11:
-                    System.out.println("Enter new user information:");
-                    carRentalSystem.addUser(carRentalSystem.TakeUserInfo());
+                    System.out.println(ANSI_CYAN + "Enter new user information:" + ANSI_RESET);
+                    carRentalSystem.addUser(carRentalSystem.TakeUserInfo(""));
                     break;
-                case 16:
-                    System.out.println("Exiting...");
+                case 12 :
+                    System.out.print(ANSI_CYAN + "Enter User ID : " + ANSI_YELLOW);
+                    String ID = scanner.nextLine();
+                    carRentalSystem.removeUser(ID);
+                    break;
+                case 13 :
+                    System.out.println(ANSI_GREEN + "Rented Vehicles : " + ANSI_RESET);
+                    carRentalSystem.listAllRentedVehicles();
+                    break;
+                case 14 :
+                    System.out.print(ANSI_CYAN + "Enter User ID : " + ANSI_YELLOW);
+                    String userid = scanner.nextLine();
+                    carRentalSystem.listUserInfo(userid);
+                    break;
+                case 15:
+                    System.out.print(ANSI_CYAN + "Enter vehicle registration ID : " + ANSI_YELLOW);
+                    String registrationID = scanner.nextLine();
+                    carRentalSystem.listVehicleInfo(registrationID);
+                    break;
+                case 16 :
+                    carRentalSystem.PrintAllMethods();
+                    break;
+                case 17:
+                    System.out.println(ANSI_RED + "Exiting..." + ANSI_RESET);
                     return;
                 default:
-                    System.out.println("Invalid choice! Please enter a valid option.");
+                    System.out.println(ANSI_RED + "Invalid choice! Please enter a valid option." + ANSI_RESET);
             }
             
         }

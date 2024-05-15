@@ -11,8 +11,9 @@ public class User {
     private List<Vehicle> rentedVehicles;
     private final int adminpassword = 9988;
     private Boolean isAdmin = false;
+    private String ID;
 
-    public User(String username, String password, String name, String surname, String gender, int age, String address, int adminpassword) {
+    public User(String username, String password, String name, String surname, String gender, int age, String address, int adminpassword, String id) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -26,6 +27,11 @@ public class User {
         this.address = address;
         this.rentedVehicles = new ArrayList<>();
         this.setAdmin(adminpassword);
+        if (id == "") {
+            this.ID = UUID.randomUUID().toString();
+        }else {
+            this.ID = id;
+        }
     }
 
     private void setAdmin(int adminpassword) {
@@ -84,6 +90,10 @@ public class User {
         return age;
     }
 
+    public String getuserID() {
+        return ID;
+    }
+
     public void setAge(int age) {
         if (age >= 18) {
             this.age = age;
@@ -120,6 +130,10 @@ public class User {
         return this.isAdmin;
     }
 
+    public String GetUserID() {
+        return this.ID;
+    }
+
     public String Printuser() {
         StringBuilder sb = new StringBuilder();
         sb.append("Username: ").append(username).append("\n");
@@ -130,6 +144,7 @@ public class User {
         sb.append("Age: ").append(age).append("\n");
         sb.append("Address: ").append(address).append("\n");
         sb.append("Admin: ").append(isAdmin ? "Yes" : "No").append("\n");
+        sb.append("ID : ").append(this.GetUserID()).append("\n");
         sb.append("Rented Vehicles: ");
         if (rentedVehicles.isEmpty()) {
             sb.append("None");
@@ -137,7 +152,7 @@ public class User {
             for (Vehicle vehicle : rentedVehicles) {
                 sb.append(vehicle.getRegistrationNumber()).append(", ");
             }
-            sb.delete(sb.length() - 2, sb.length()); // Remove trailing comma and space
+            sb.delete(sb.length() - 2, sb.length()); 
         }
         return sb.toString();
     }
